@@ -4,8 +4,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Chapas extends CI_Controller {
     public function __construct(){
         parent::__construct();
-        $dados['admin'] = true;
-    }
+        if(!$this->session->userdata('logado')){
+            redirect(base_url());
+        }
+
+        $dados['admin'] = $this->session->userdata('user_logado')->super_usuario;    }
 
 	public function index(){
         //$this->load->view('welcome_message');

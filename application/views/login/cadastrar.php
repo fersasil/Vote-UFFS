@@ -11,37 +11,37 @@
               <div class="text-center">
                 <h1 class="h4 text-gray-900 mb-4">Crie uma conta</h1>
               </div>
-              <form class="user">
-                <div class="form-group row">
+              <!-- <form class="user"> -->
+                <?=form_open('usuario/nova_conta')?>
+                <?=validation_errors('<div class="alert alert-danger">', '</div>');?>
+                <div class="form-group row user">
                   <div class="col-sm-6 mb-3 mb-sm-0">
-                    <input type="text" class="form-control form-control-user" id="exampleFirstName" placeholder="Nome">
+                    <input type="text" class="form-control form-control-user" name="nome" id="nome" placeholder="Nome">
                   </div>
                   <div class="col-sm-6">
-                    <input type="text" class="form-control form-control-user" id="exampleLastName" placeholder="Sobrenome">
+                    <input type="text" class="form-control form-control-user" name="sobrenome" id="sobrenome" placeholder="Sobrenome">
                   </div>
                 </div>
                 <div class="form-group">
-                  <input type="email" class="form-control form-control-user" id="exampleInputEmail" placeholder="Email">
+                  <input type="email" class="form-control form-control-user" name="email" id="email" placeholder="Email">
                 </div>
                 <div class="form-group row">
                   <div class="col-sm-6 mb-3 mb-sm-0">
-                    <input type="text" class="form-control form-control-user" id="exampleInputPassword" placeholder="Matricula">
+                    <input type="text" class="form-control form-control-user" name="matricula" id="matricula" placeholder="Matricula">
                   </div>
                   <div class="col-sm-6">
-                    <input type="text" class="form-control form-control-user" id="exampleRepeatPassword" placeholder="CPF">
+                    <input type="text" class="form-control form-control-user" name="cpf" id="cpf" placeholder="CPF">
                   </div>
                 </div>
                 <div class="form-group row">
                   <div class="col-sm-6 mb-3 mb-sm-0">
-                    <input type="password" class="form-control form-control-user" id="exampleInputPassword" placeholder="Senha">
+                    <input type="password" class="form-control form-control-user" name="senha" id="senha" placeholder="Senha">
                   </div>
                   <div class="col-sm-6">
-                    <input type="password" class="form-control form-control-user" id="exampleRepeatPassword" placeholder="Repita a senha">
+                    <input type="password" class="form-control form-control-user" name="senha2" id="senha2" placeholder="Repita a senha">
                   </div>
                 </div>
-                <a href="login.html" class="btn btn-primary btn-user btn-block">
-                  Cria a conta
-                </a>
+                <input type="submit" class="btn btn-primary btn-user btn-block" value="Cria a conta">
               </form>
               <hr>
               <div class="text-center">

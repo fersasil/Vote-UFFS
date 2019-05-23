@@ -4,7 +4,14 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Home extends CI_Controller {
     public function __construct(){
         parent::__construct();
-        $dados['admin'] = true;
+        if(!$this->session->userdata('logado')){
+            redirect(base_url());
+        }
+
+        //var_dump($this->session->userdata('user_logado'));
+        //die();
+
+        $dados['admin'] = $this->session->userdata('user_logado')->super_usuario;
     }
 
 	public function index(){

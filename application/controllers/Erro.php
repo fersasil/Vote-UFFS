@@ -3,9 +3,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Erro extends CI_Controller {
 	public function __construct(){
-        parent::__construct();
-        $dados['admin'] = true;
-    }
+		parent::__construct();
+		if(!$this->session->userdata('logado')){
+            redirect(base_url('admin/login'));
+        }
+
+		$dados['admin'] = $this->session->userdata('user_logado')->super_usuario;    }
 
 	public function index(){
 		$dados["titulo"] = "Página não encontrada!";

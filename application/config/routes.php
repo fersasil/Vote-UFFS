@@ -75,3 +75,8 @@ $route['cadastrar-chapa'] = 'chapas/cadastrar_chapa';
 
 
 $route['admin/(:num)/(:any)'] = "admin/eleicao/$1/$2";
+$route['votacao/(:num)/(:any)'] = "votacao/votar/$1/$2";
+$route['chapa/info/(:num)/(:any)'] = "chapas/imprime_chapa/$1/$2";
+
+$route['admin/chapa-conf/(:num)/(:any)'] = "admin//$1/$2";
+

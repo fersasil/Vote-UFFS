@@ -40,9 +40,20 @@
           <div class="bg-white py-2 collapse-inner rounded">
               <a class="collapse-item" href="<?=base_url('admin/cadastrar-eleicao')?>">Cadastrar Eleição</a>
             <h6 class="collapse-header">Eleições Disponíveis:</h6>
-            <a class="collapse-item" href="<?=base_url('admin/eleicao/0/colegiado-cc')?>">Colegiado CC</a>
-            <a class="collapse-item" href="<?=base_url('admin/eleicao/1/dce')?>">DCE</a>
-            <a class="collapse-item" href="<?=base_url('admin/eleicao/2/reitoria-uffs')?>">Reitoria UFFS</a>
+            <?php
+              //var_dump($eleicoes);
+              //die();
+              if(count($eleicoes) == 0){
+                echo '<a class="collapse-item">Nenhuma eleição</a>';
+              }
+              else{
+                foreach($eleicoes as $eleicao){
+            ?>
+                  <a class="collapse-item" href="<?=base_url('admin/eleicao/' . $eleicao->id_eleicao .'/' . friendly_url($eleicao->nome))?>"><?=$eleicao->nome?></a>
+            <?php 
+                }
+              }
+            ?>
           </div>
         </div>
       </li>

@@ -11,14 +11,16 @@ class Home extends CI_Controller {
         //var_dump($this->session->userdata('user_logado'));
         //die();
 
-        $dados['admin'] = $this->session->userdata('user_logado')->super_usuario;
+        $this->load->model('eleicao_model');
+        $this->load->helper('func');
+        $this->eleicoes = $this->eleicao_model->retorna_todas_eleicoes();
     }
 
 	public function index(){
         //$this->load->view('welcome_message');
         //Top
         $dados["titulo"] = "Dashboard";
-        $dados["admin"] = true;
+        $dados['eleicoes'] = $this->eleicoes;
         $this->load->view("backend/template/head", $dados);
         $this->load->view("backend/template/sidebar");
 

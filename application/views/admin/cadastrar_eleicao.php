@@ -11,39 +11,40 @@
       <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary">Criação de uma nova Eleição</h6>
       </div>
-      <div class="card-body">
+      <div class="card-body form">
         <!-- Inicio do formulario de votação -->
-        <form role="form">
+        
+        <?=validation_errors('<div class="alert alert-danger">', '</div>'); ?>
+        <?=form_open(base_url('admin/nova_eleicao')); ?>
+            
             <div class="form-group">
                 <label>Nome da eleição</label>
-                <input class="form-control" placeholder="Digite a sua chave privada">
+                <input name="nome_eleicao" class="form-control" placeholder="Digite o nome da eleição">
             </div>
             <div class="form-group">
                 <label>Descrição da Eleição</label>
-                <textarea class="form-control" placeholder="Descreva a eleição"></textarea>
+                <textarea name="descricao_eleicao" class="form-control" placeholder="Descreva a eleição"></textarea>
             </div>
             <div class="form-group">
                 <div class="row">
-                    <div class="col-lg-4">
-                        <label>Duração</label>
-                        <input class="form-control" placeholder="Nº de dias">
-                    </div>
 
-                    <div class="col-lg-4">
-                        <label>Dia da votação</label>
-                        <input type="text" class="form-control" placeholder="dia ">
+                    <div class="col-lg-8">
+                        <label for="">Inicio e fim da votação</label>
+                        <input id="dateTimePicker" class="form-control" type="text" name="daterange" value="" />
+                        <input type="hidden" id="inicioEleicao" value="" name="inicioEleicao">
+                        <input type="hidden" id="fimEleicao" value="" name="fimEleicao">
                     </div>
 
                     <div class="col-lg-4">
                         <label>Nº de Chapas</label>
-                        <input type="text" class="form-control" placeholder="ex: 10">
+                        <input name="numero_max_chapas" type="text" class="form-control" placeholder="ex: 3">
                     </div>
                 </div>
 
             </div>    
             <div class="form-group">
                 <label>Tipo de Votação</label>
-                <select class="form-control">
+                <select name="tipo_votacao" class="form-control">
                     <option value="" selected disabled hidden>Escolha aqui</option>
                     <option>Centro Academico</option>
                     <option>DCE</option>

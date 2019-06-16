@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    
+    <link rel="stylesheet" href="dist/css/datepicker.css">
+<script src="dist/js/datepicker.standalone.js"></script>
+
+<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+
+
+</head>
+
+<body>
+
+<a class="c-btn c-datepicker-btn">
+  <span class="material-icon">Click me</span>
+</a>
+
+<pre id="output"></pre>
+
+
+
+
+<script>
+
+const picker = new MaterialDatePicker({})
+  .on('submit', (d) => {
+    output.innerText = d;
+  });
+
+const el = document.querySelector('.c-datepicker-btn');
+el.addEventListener('click', () => {
+  picker.open();
+}, false);
+
+</script>
+
+</body>
+</html>

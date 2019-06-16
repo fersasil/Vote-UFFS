@@ -20,13 +20,16 @@
             <!-- Inicio da apresentação da chapa 1 -->
             <div class="row">
                 <?
-                  $alterar = anchor(base_url('/chapas/alterar/01/diversa'), '<div class="btn btn-light">Aprovar</div>');
-                  $excluir = anchor(base_url('/chapas/excluir/01/diversa'), '<div class="btn btn-light">Rejeitar</div>');
                   $this->table->set_heading('Informações', 'Aprovar', 'Rejeitar');
-                  $this->table->add_row(anchor('chapas/pendentes/1' , 'Diversa'), $alterar, $excluir);
-                  $this->table->add_row(anchor('chapas/pendentes/1', 'Plural'), $alterar, $excluir);
-                  $this->table->add_row(anchor('chapas/pendentes/1', 'Conserta'), $alterar, $excluir);
 
+                  foreach ($chapas as $chapa) {
+                    if($chapa->aprovada == 0){
+                      $alterar = anchor(base_url('chapas/aprovar/' . $chapa->id_chapa . '/' . $chapa->nome_chapa), '<div class="btn btn-light">Aprovar</div>');
+                      $excluir = anchor(base_url('chapas/rejeitar/' . $chapa->id_chapa . '/' . $chapa->nome_chapa), '<div class="btn btn-light">Rejeitar</div>');
+                      $this->table->add_row(anchor('admin/chapa-conf/' . $chapa->id_chapa . '/' , $chapa->nome_chapa), $alterar, $excluir);
+                    }
+                  }
+                
                   $this->table->set_template(array(
                   'table_open' => '<table class="table table-striped">'
                   ));
@@ -50,17 +53,16 @@
       <div class="card-body">
         <!-- Inicio do formulario de votação -->
         <?php
-          //$this->load->library('table');
-          $alterar = anchor(base_url('/chapas/alterar/01/diversa'), '<div class="btn btn-light">Alterar</div>');
-          $excluir = anchor(base_url('/chapas/excluir/01/diversa'), '<div class="btn btn-light">Excluir</div>');
-
+          
           $this->table->set_heading('Nome', 'Alterar', 'Excluir');
 
-
-          
-          $this->table->add_row('Diversa', $alterar, $excluir);
-          $this->table->add_row('Plural', $alterar, $excluir);
-          $this->table->add_row('Conserta', $alterar, $excluir);
+          foreach ($chapas as $chapa) {
+            if($chapa->aprovada == 1){
+              $alterar = anchor(base_url('chapas/alterar/' . $chapa->id_chapa . '/' . $chapa->nome_chapa), '<div class="btn btn-light">Alterar</div>');
+              $excluir = anchor(base_url('chapas/excluir/' . $chapa->id_chapa . '/' . $chapa->nome_chapa), '<div class="btn btn-light">Excluir</div>');
+              $this->table->add_row(anchor('chapas/mais/' . $chapa->id_chapa . '/' , $chapa->nome_chapa), $alterar, $excluir);
+            }
+          }
 
           $this->table->set_template(array(
             'table_open' => '<table class="table table-striped">'

@@ -32,4 +32,13 @@ class Usuario_model extends CI_Model{
         $this->db->insert("usuario", $dados);
     }
 
+    public function matricula_para_id($matricula){
+        //Preparar banco
+        $this->db->select('id_usuario');
+        $this->db->where('matricula', $matricula);
+        return $this->db->get("usuario")->result();
+    }
+
+    
+
 }

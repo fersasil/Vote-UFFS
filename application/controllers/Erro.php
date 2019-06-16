@@ -6,11 +6,16 @@ class Erro extends CI_Controller {
 		parent::__construct();
 		if(!$this->session->userdata('logado')){
             redirect(base_url('admin/login'));
-        }
+		}
+		$this->load->model('eleicao_model');
+        $this->load->helper('func');
+        $this->eleicoes = $this->eleicao_model->retorna_todas_eleicoes();
 
-		$dados['admin'] = $this->session->userdata('user_logado')->super_usuario;    }
+
+	}
 
 	public function index(){
+		$dados['eleicoes'] = $this->eleicoes;
 		$dados["titulo"] = "Página não encontrada!";
 		$dados['admin'] = true;
         $this->load->view("backend/template/head", $dados);

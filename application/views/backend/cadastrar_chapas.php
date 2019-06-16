@@ -2,9 +2,6 @@
 <div class="container-fluid">
 
 <!-- Page Heading -->
-<h1 class="h3 mb-4 text-gray-800">Eleição do <?=$titulo?></h1>
-<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore non sit explicabo tempora quos laborum corrupti, sequi facere assumenda odio, dignissimos ex a ducimus sint nobis quibusdam! Tempora, totam explicabo!</p>
-
 <div class="col-lg-12">
 
     <div class="card position-relative">
@@ -12,138 +9,243 @@
         <h6 class="m-0 font-weight-bold text-primary">Cadastrar nova chapa</h6>
       </div>
       <div class="card-body">
-        <!-- Inicio do formulario de votação -->
-        <form role="form">
-            <div class="row">
-                <div class="col-lg-5">
-                    <div class="form-group">
-                        <label>Eleição</label>
-                        <select class="form-control">
-                            <option value="" selected disabled hidden>Escolha aqui</option>
-                            <option>DCE</option>
-                            <option>Colegiado</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Nome da Chapa</label>
-                        <input class="form-control" placeholder="Digite o nome ">
-                    </div>
-                    <div class="form-group">
-                        <label>Descrição</label>
-                        <textarea class="form-control" placeholder="Breve descrição da chapa"></textarea>
-                    </div>
-
-                    <hr>
-                    <!-- Inicio do Vice -->
-                    <div class="form-group">
-                        <label>Vice Presidente</label>
-                        <input class="form-control" placeholder="Digite o nome ">
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-5">
-                            <label>Matricula</label>
-                            <input class="form-control" placeholder="Digite o nome ">
-                        </div>
-                    
-                        <div class="form-group col-5">
-                            <label>Semestre</label>
-                            <input class="form-control" placeholder="Digite o nome ">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Descrição</label>
-                        <textarea class="form-control" placeholder="Uma breve descrição"></textarea>
-                    </div>
-                    <hr>
-                    <!-- Fim do vice -->
-
-                    <!-- Inicio do Tesoureiro -->
-                    <div class="form-group">
-                        <label>Tesoureiro(a)</label>
-                        <input class="form-control" placeholder="Digite o nome ">
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-5">
-                            <label>Matricula</label>
-                            <input class="form-control" placeholder="Digite o nome ">
-                        </div>
-                    
-                        <div class="form-group col-5">
-                            <label>Semestre</label>
-                            <input class="form-control" placeholder="Digite o nome ">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Descrição</label>
-                        <textarea class="form-control" placeholder="Uma breve descrição"></textarea>
-                    </div>
-                    <hr>
-                    <!-- Fim do tesoureiro -->
-
-                <!-- Fim da coluna -->
-                </div>
-                <div class="col-lg-5">
-                    <!-- Inicio do presidente -->
-                    <div class="form-group">
-                        <label>Presidente</label>
-                        <input class="form-control" placeholder="Digite o nome ">
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-5">
-                            <label>Matricula</label>
-                            <input class="form-control" placeholder="Digite o nome ">
-                        </div>
-                    
-                        <div class="form-group col-5">
-                            <label>Semestre</label>
-                            <input class="form-control" placeholder="Digite o nome ">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Descrição</label>
-                        <textarea class="form-control" placeholder="Uma breve descrição"></textarea>
-                    </div>
-                    <hr>
-                    <!-- Fim do presidente -->
-
-                    <!-- Inicio do scretario -->
-                    <div class="form-group">
-                        <label>Secretario(a)</label>
-                        <input class="form-control" placeholder="Digite o nome ">
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-5">
-                            <label>Matricula</label>
-                            <input class="form-control" placeholder="Digite o nome ">
-                        </div>
-                    
-                        <div class="form-group col-5">
-                            <label>Semestre</label>
-                            <input class="form-control" placeholder="Digite o nome ">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Descrição</label>
-                        <textarea class="form-control" placeholder="Uma breve descrição"></textarea>
-                    </div>
-                    <hr>
-                    <!-- Fim do presidente -->
-
-                    <div class="btn btn-link" id="adicionaMembro">Mais</div>
-                </div>
-            </div>
-                <button type="submit" class="btn btn-default">Cadastrar</button>
-                <button type="reset" class="btn btn-default">Limpar</button>
-        </form>
+          <?php 
+            if(count($eleicoes) == 0){
+                echo "<p>Nenhuma eleição disponível!</p></div></div></div>";
+            }
+            else{ //pega todo o resto da pagina
+          ?>
+          <p>Cadastre uma nova chapa abaixo! Aqui vão ser inseridos textos!</p>
       </div>
     </div>
+</div>
+<br>
+<?=validation_errors('<div class="alert alert-danger">', '</div>');?>
+<?=form_open(base_url('chapas/cria_nova_chapa'));?>
+<div class="col-lg-12 row">
+    <div class="col-lg-6">
+        <div class="card position-relative">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Eleição</h6>
+            </div>
+            <div class="card-body">
+        <!-- Inicio do formulario de votação -->
+                <div class="form-group">
+                    <select name="eleicao_id" class="form-control">
+                        <option value="-1" selected disabled hidden>Escolha aqui</option>
+                    
+                    <?php
+                        foreach ($eleicoes as $eleicao) {
+                    ?>
+                        <option value="<?=$eleicao->id_eleicao?>"><?=$eleicao->nome?></option>
+                    <?php
+                        }
+                    ?>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
 
-      
+    <div class="col-lg-6">
+        <div class="card position-relative">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Nome da Chapa</h6>
+            </div>
+            <div class="card-body form-group">
+                <input name="nome_chapa" class="form-control" placeholder="Digite o nome ">   
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="col-lg-12 row">
+    <div class="col-lg-6">
+        <div class="card position-relative">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Descrição</h6>
+            </div>
+            <div class="card-body form-group">
+                <textarea name="descricao_chapa" class="form-control" placeholder="Breve descrição da chapa"></textarea>
+            </div>
+        </div>
+    </div>
 
+    <div class="col-lg-6">
+        <div class="card position-relative">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">CAMPO FOTO CHAPA</h6>
+            </div>
+            <div class="card-body form-group">
+                <textarea name="img_chapa" class="form-control" placeholder="Breve descrição da chapa"></textarea>
+            </div>
+        </div>
+    </div>
 </div>
 
+<br>
 
+<div class="col-lg-12 row">
+    <!-- Inicio do Presidente -->
+    <div class="col-lg-6">
+        <div class="card position-relative">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Presidente</h6>
+            </div>
+            <div class="card-body form-group">
+                <div class="col-lg-12">
+                <label>Presidente</label>
+                <input name="nome_presidente" class="form-control" placeholder="Digite o nome ">
+            </div>
+            <br>
+            <div class="col-lg-12 row form-group">
+                <div class=" col-lg-6">
+                    <label>Matricula</label>
+                    <input name="matricula_presidente" class="form-control" placeholder="ex: 0000000000 ">
+                </div>
+                
+                <div class="col-lg-6">
+                    <label>Semestre</label>
+                    <input name="semestre_presidente" class="form-control" placeholder="Somente o numero">
+                </div>
+            </div>
+
+            <div class="form-group col-lg-12">
+                <label>Descrição</label>
+                <textarea name="descricao_presidente" class="form-control" placeholder="Uma breve descrição"></textarea>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+    
+<!-- Inicio do Presidente -->
+<div class="col-lg-6">
+        <div class="card position-relative">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Vice Presidente</h6>
+            </div>
+            <div class="card-body form-group">
+                <div class="col-lg-12">
+                <label>Vice Presidente</label>
+                <input name="nome_vice_presidente" class="form-control" placeholder="Digite o nome ">
+            </div>
+            <br>
+            <div class="col-lg-12 row form-group">
+                <div class=" col-lg-6">
+                    <label>Matricula</label>
+                    <input name="matricula_vice_presidente" class="form-control" placeholder="ex: 0000000000 ">
+                </div>
+                
+                <div class="col-lg-6">
+                    <label>Semestre</label>
+                    <input name="semestre_vice_presidente" class="form-control" placeholder="Somente o numero">
+                </div>
+            </div>
+
+            <div class="form-group col-lg-12">
+                <label>Descrição</label>
+                <textarea name="descricao_vice_presidente" class="form-control" placeholder="Uma breve descrição"></textarea>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Fim da linha -->
+</div>
+<br>
+
+<div class="col-lg-12 row">
+    <!-- Inicio do secretario -->
+    <div class="col-lg-6">
+        <div class="card position-relative">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Secretario(a)</h6>
+            </div>
+            <div class="card-body form-group">
+                <div class="col-lg-12">
+                <label>Secretario(a)</label>
+                <input name="nome_secretario" class="form-control" placeholder="Digite o nome ">
+            </div>
+            <br>
+            <div class="col-lg-12 row form-group">
+                <div class=" col-lg-6">
+                    <label>Matricula</label>
+                    <input name="matricula_secretario" class="form-control" placeholder="ex: 0000000000 ">
+                </div>
+                
+                <div class="col-lg-6">
+                    <label>Semestre</label>
+                    <input name="semestre_secretario" class="form-control" placeholder="Somente o numero">
+                </div>
+            </div>
+
+            <div class="form-group col-lg-12">
+                <label>Descrição</label>
+                <textarea name="descricao_secretario" class="form-control" placeholder="Uma breve descrição"></textarea>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+    
+<!-- Inicio do tesoureiro -->
+<div class="col-lg-6">
+        <div class="card position-relative">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Tesoureiro(a)</h6>
+            </div>
+            <div class="card-body form-group">
+                <div class="col-lg-12">
+                <label>Tesoureiro(a)</label>
+                <input name="nome_tesoureiro" class="form-control" placeholder="Digite o nome ">
+            </div>
+            <br>
+            <div class="col-lg-12 row form-group">
+                <div class=" col-lg-6">
+                    <label>Matricula</label>
+                    <input name="matricula_tesoureiro" class="form-control" placeholder="ex: 0000000000 ">
+                </div>
+                
+                <div class="col-lg-6">
+                    <label>Semestre</label>
+                    <input name="semestre_tesoureiro" class="form-control" placeholder="Somente o numero">
+                </div>
+            </div>
+
+            <div class="form-group col-lg-12">
+                <label>Descrição</label>
+                <textarea name="descricao_tesoureiro" class="form-control" placeholder="Uma breve descrição"></textarea>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Fim da linha -->
+</div>
+<br>
+
+<input type="hidden" id="numero_suplentes" name="numero_suplentes" value="0">
+<div id="supl1" class="col-lg-12 row"></div>
+<div id="supl3" class="col-lg-12 row"></div>
+<div id="supl5" class="col-lg-12 row"></div>
+<div id="supl7" class="col-lg-12 row"></div>
+<div id="supl9" class="col-lg-12 row"></div>
+
+<br>
+<div id="submit_form">
+    <button type="submit" class="btn btn-default">Cadastrar</button>
+    <button type="reset" class="btn btn-default">Limpar</button>
+    <a href="#submit_form" class="btn btn-default" id="adicionaMembro">Adicionar Suplente</a>
+</div>
+<?php 
+    echo form_close();
+    } //fecha o else
+?>
 
 
 </div>

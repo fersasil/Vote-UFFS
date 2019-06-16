@@ -8,10 +8,15 @@ class Resultados extends CI_Controller {
             redirect(base_url());
         }
 
-		$dados['admin'] = $this->session->userdata('user_logado')->super_usuario;
+		$this->load->model('eleicao_model');
+        $this->load->helper('func');
+		$this->eleicoes = $this->eleicao_model->retorna_todas_eleicoes();
+		
 	}
 
 	public function index(){
+		$dados['eleicoes'] = $this->eleicoes;
+		//Adicionar um capo ativo a tabela de eleições no banco
 		$dados['titulo'] = "Resultado das Eleições";
 
 		$this->load->view("backend/template/head", $dados);

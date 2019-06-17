@@ -71,12 +71,12 @@ $route['admin/candidatos-chapas'] = 'admin/candidatos_chapas';
 
 
 $route['admin/cadastrar-eleicao'] = 'admin/cadastrar_eleicao';
-$route['cadastrar-chapa'] = 'chapas/cadastrar_chapa';
+$route['cadastrar-chapa/(:any)'] = 'chapas/cadastrar_chapa/$1';
 
 
 $route['admin/(:num)/(:any)'] = "admin/eleicao/$1/$2";
-$route['votacao/(:num)/(:any)'] = "votacao/votar/$1/$2";
+$route['votacao/(:num)/(:any)/(:any)'] = "votacao/votar/$1/$2/$3";
 $route['chapa/info/(:num)/(:any)'] = "chapas/imprime_chapa/$1/$2";
 
-$route['admin/chapa-conf/(:num)/(:any)'] = "admin//$1/$2";
+$route['admin/chapa-conf/(:num)/(:any)'] = "admin/$1/$2";
 

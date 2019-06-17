@@ -34,12 +34,12 @@
       </div>
 
       <!-- Nav Item - Pages Collapse Menu -->
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           <i class="fas fa-fw fa-cog"></i>
           <span>Eleições</span>
         </a>
-        <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Votações Disponíveis:</h6>
             <?php
@@ -55,21 +55,26 @@
               }
             ?>
             <h6 class="collapse-header">Mais:</h6>
-            <a class="collapse-item" href="<?=base_url('cadastrar-chapa')?>">Cadastrar uma chapa</a>
+            <a class="collapse-item" href="<?=base_url('chapas/cadastrar_chapa')?>">Cadastrar uma chapa</a>
           </div>
         </div>
       </li>
 
       <hr class="sidebar-divider">
 
-      <li class="nav-item active">
+      <li class="nav-item">
         <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
           <i class="fas fa-fw fa-folder"></i>
-          <span>Ajuda</span>
+          <span>Mais</span>
         </a>
         <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Ajuda:</h6>
+            <a class="collapse-item" href="<?=base_url('/ajuda/gerar_chave_publica')?>">Gerar chave Publica</a>
+            <a class="collapse-item" href="<?=base_url('/ajuda/pesquisar_na_blockchain')?>">Pesquisar na blockchain</a>
+            <a class="collapse-item" href="<?=base_url('/ajuda/historico_votos')?>">Histórico de votos</a>
+
+            <h6 class="collapse-header">Informações:</h6>
             <a class="collapse-item" href="<?=base_url('/como-votar')?>">Como votar?</a>
             <a class="collapse-item" href="<?=base_url('/como-funciona')?>">Como funciona?</a>
             <a class="collapse-item" href="<?=base_url('/seguranca')?>">Segurança</a>

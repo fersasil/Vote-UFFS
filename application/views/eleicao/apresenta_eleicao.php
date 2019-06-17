@@ -57,6 +57,70 @@
       <div class="card-body">
         <!-- Inicio do formulario de votação -->
           <?=form_open(base_url('votacao/realizar_votar'))?>
+          <?php echo validation_errors('<div class="alert alert-warning">', "</div>"); ?>
+          <?php
+            if($erro == md5("campo_nao_preenchido")){
+              echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <strong>Você não preencheu os campos corretamente, tente novamente.</strong> 
+                <hr>
+                <p>Se o erro persistir entre em contato conosco</p>
+              </div>';
+            }
+            else if($erro == md5("time_out")){
+              echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <strong>Você não tem mais tempo para votar!</strong> 
+                <hr>
+                <p>Infelizmente a eleição foi encerrada.</p>
+              </div>';
+            }
+            else if($erro == md5("unknown_private_key")){
+              echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <strong>Chave privada não pertence a nenhum usuário cadastrado no sistema!</strong> 
+                <hr>
+                <p>Caso acredite que isso seja um erro, entre em contato o mais rápido possível!</p>
+              </div>';
+            }
+            else if($erro == md5("chave_ja_utilizada")){
+              echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <strong>Chave já utilizada nessa eleição!</strong> 
+                <hr>
+                <p>Caso acredite que isso seja um erro, entre em contato o mais rápido possível!</p>
+              </div>';
+            }
+            else if($erro == md5("erro")){
+              echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <strong>Um erro ocorreu! Acreditamos que a chave inserida pode ser inválida</strong> 
+                <hr>
+                <p>Caso acredite que isso seja um bug, entre em contato o mais rápido possível!</p>
+              </div>';
+            }
+            else if($erro == md5("ok")){
+              echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <strong>Voto realizado com sucesso!</strong> 
+                <hr>
+                <p>Você não podera votar nessa eleição novamente!</p>
+              </div>';
+            }
+          ?>
+
             <div class="form-group form">
                 <label>Chave privada</label>
                 <input disabled id="chavePrivada" autocomplete="off" name="chavePrivada" class="form-control" placeholder="Digite a sua chave privada">
@@ -81,9 +145,9 @@
 
             <div style="display: none" id="info-v-ok" class="alert alert-info" role="alert">
                 <h4 class="alert-heading">Ja pode votar!</h4>
-                <p>Você só podera votar uma única vez, seu voto é inalterável</p>
+                <p>Você só podera votar uma única vez, seu voto é inalterável.</p>
                 <hr>
-                <p>Sua chave privada só funcionára uma vez! Não a jogue fora após a eleição e nem a compartilhe com nimguem</p>
+                <p>Sua chave privada só funcionára uma vez! Não a jogue fora após a eleição e nem a compartilhe com ninguem!</p>
             </div>
 
             <input disabled value="Votar" id="votarEleicao" type="submit" class="btn btn-default">

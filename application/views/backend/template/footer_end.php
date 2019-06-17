@@ -14,7 +14,9 @@
   <script src="<?=base_url("assets/vendor/jquery-easing/jquery.easing.min.js")?>"></script>
 
   <!-- Custom scripts for all pages-->
-  <script src="<?=base_url("assets/js/sb-admin-2.min.js")?>"></script>
+    <script src="<?=base_url("assets/js/sb-admin-2.min.js")?>"></script>
+    <script src="<?=base_url("assets/vendor/mask-plugin/src/jquery.mask.js")?>"></script>
+
 
   <script>
     let count = 1;
@@ -93,7 +95,39 @@
         });
     });
 
+    $(function(){
+        $("#cpf").mask("999.999.999-99");
+    });
+
+
+
+    $(function(){
+
+        $('#mostrar_chave_privada').on("click", function(){
+            $(this).hide();
+            $("#success_chave_privada").show("slow");
+        });
+
+        $('#gerar_pdf').on("click", function(){
+            $('#chave_usuario')
+            const doc = new jsPDF({
+            orientation: 'portrait',
+            unit: 'cm',
+            format: 'a4'
+            });
+
+            const chave_privada = $('#chave_usuario').text();
+            
+            doc.text("Sua chave privada é:\n" + chave_privada + "\n mantenha em segurança, não é possível gera-la novamente!", 1, 1);
+            
+            doc.save('chave_privada.pdf');
+        
+        });
+
+    });
+
 </script>
+
 
 </body>
 

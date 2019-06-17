@@ -30,4 +30,17 @@ class Eleicao_model extends CI_Model{
         return $this->db->get("eleicao")->result();
     }
 
+    public function buscar_chave_publica($chavePublica){
+        $this->db->select("chave_publica");
+        $this->db->where("chave_publica", $chavePublica);
+        $this->db->from("chaves_publicas");
+        return $this->db->get()->result();
+    }
+
+    public function salvar_chave_publica($chavePublica, $data_criacao){
+        $dados['chave_publica'] = $chavePublica;
+        $dados['data_criacao'] = $data_criacao;
+        return $this->db->insert("chaves_publicas", $dados);
+    }
+
 }

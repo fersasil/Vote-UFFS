@@ -52,9 +52,17 @@ class Chapas extends CI_Controller {
         $this->load->view("backend/template/footer_end");
     }
     
-    public function cadastrar_chapa(){
+    public function cadastrar_chapa($info = null){
         $dados['eleicoes'] = $this->eleicoes;
         $dados['titulo'] = "Cadastrar Chapa";
+        
+        if($info){
+            $dados['sucesso'] = true;
+        }
+        else{
+            $dados['sucesso'] = false;            
+        }
+
         $this->load->view("backend/template/head", $dados);
         $this->load->view("backend/template/sidebar");
         $this->load->view("backend/template/topbar");
@@ -218,11 +226,24 @@ class Chapas extends CI_Controller {
             }
 
             
-            $this->chapa_model->cria_nova_chapa($chapa_info, $presidente['id'], $presidente['descricao'], $vice['id'], $vice['descricao'], $tesoureiro['id'], $tesoureiro['descricao'], $secretario['id'], $secretario['descricao'], $suplente);
+            //$this->chapa_model->cria_nova_chapa($chapa_info, $presidente['id'], $presidente['descricao'], $vice['id'], $vice['descricao'], $tesoureiro['id'], $tesoureiro['descricao'], $secretario['id'], $secretario['descricao'], $suplente);
+            $this->chapa_model->cria_chapa($chapa_info);
             
+            $idChapa = $this->chapa_model->procura_id_por_nome($chapa_info["nome_chapa"]);
+            $idChapa = $idChapa[0]->id_chapa;
+ 
+            $this->chapa_model->cadastrar_membro($presidente['id'], $presidente['descricao'], $idChapa, "Presidente");
+            $this->chapa_model->cadastrar_membro($vice['id'], $vice['descricao'], $idChapa, "Vice-Presidente");
+            $this->chapa_model->cadastrar_membro($tesoureiro['id'], $tesoureiro['descricao'], $idChapa, "Tesoureiro");
+            $this->chapa_model->cadastrar_membro($secretario['id'], $secretario['descricao'], $idChapa, "Secretario");
+
+            for($i = 1; $i <= $numero_suplentes; $i++){
+                $this->chapa_model->cadastrar_membro($suplente['suplente_' . $i .'_id'], $suplente['suplente_' . $i . '_descricao'], $idChapa, "Suplente");            
+            }
+
             //Redirecionar para a pagina que estava e mostrar uma mensagem nela!
             //ou ir para uma página de pendentes...
-            redirect(base_url('cadastrar-chapa'));
+            redirect(base_url('cadastrar-chapa/'));
         }
         else{   //caso de erro
             $this->cadastrar_chapa();

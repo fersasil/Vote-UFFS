@@ -37,6 +37,18 @@ class Chapa_model extends CI_Model{
         return $this->db->insert("chapa", $config);
     }
 
+    public function cria_chapa($chapa_info){
+
+        $config['nome_chapa'] = $chapa_info['nome_chapa'];
+        $config['descricao'] = $chapa_info['descricao_chapa'];
+        $config['img'] = $chapa_info['img_chapa'];
+        $config['aprovada'] = false;
+        $config['numero_suplentes'] = $chapa_info['numero_suplentes'];
+        $config['eleicao_id'] = $chapa_info['eleicao_id'];
+
+        return $this->db->insert("chapa", $config);
+    }
+
     
     public function retorna_chapa_por_id($id){
         //preparar variaveis
@@ -63,6 +75,22 @@ class Chapa_model extends CI_Model{
         $this->db->where('eleicao_id', $id);
 
         return $this->db->get("chapa")->result();
+    }
+
+    public function cadastrar_membro($idMembro, $descricaoMembro, $idChapa, $cargo){
+        $dados['idMembro'] = $idMembro;
+        $dados['descricaoMembro'] = $descricaoMembro;
+        $dados['idChapa'] = $idChapa;
+        $dados['cargo'] = $cargo;
+
+        return $this->db->insert("chapa_membro", $dados);
+    }
+
+    public function procura_id_por_nome($nome_chapa){
+        $this->db->select("id_chapa");
+        $this->db->from("chapa");
+        $this->db->where("nome_chapa", $nome_chapa);
+        return $this->db->get()->result();
     }
 
 }

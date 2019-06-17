@@ -21,6 +21,20 @@
 </div>
 <br>
 <?=validation_errors('<div class="alert alert-danger">', '</div>');?>
+
+<?php
+    if($sucesso){
+?>
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        <span class="sr-only">Close</span>
+    </button>
+    <strong>Chapa cadastrada com sucesso!</strong>
+    <hr>
+    <p>Agora só falta ser aprovado pela moderação!</p>
+</div>
+    <?php }?>
 <?=form_open(base_url('chapas/cria_nova_chapa'));?>
 <div class="col-lg-12 row">
     <div class="col-lg-6">

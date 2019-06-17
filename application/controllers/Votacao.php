@@ -16,6 +16,7 @@ class Votacao extends CI_Controller {
         $this->load->helper(array('func', 'form'));
         //$this->load->library('form');
         $this->eleicoes = $this->eleicao_model->retorna_todas_eleicoes();
+        $this->load->library('form_validation');
 
         date_default_timezone_set('America/Sao_Paulo');
     }
@@ -34,7 +35,9 @@ class Votacao extends CI_Controller {
 		$this->load->view("backend/template/footer_end");
     }
     
-    public function votar($id = null, $eleicao = null){
+    public function votar($id = null, $eleicao = null, $erro = null){
+        $this->load->library('form_validation');
+
         //carregar o model das eleições
         if($id == null){
             echo "Não acesse essa pagina diretamente!";
@@ -62,7 +65,12 @@ class Votacao extends CI_Controller {
         $dados['id_eleicao'] = $id;
         $dados['dia_de_hoje'] = date("Y-m-d H:i:s");
         
-
+        if($erro != null){
+            $dados['erro'] = urldecode($erro);
+        }
+        else{
+            $dados['erro'] = false;
+        }
         
         $dados['eleicoes'] = $this->eleicoes;
         
@@ -78,13 +86,31 @@ class Votacao extends CI_Controller {
     }
 
     public function realizar_votar(){
+        $this->index();
+
+        $this->form_validation->set_rules('chavePrivada', 'Chave privada', 'required|min_length[60]');
+        $this->form_validation->set_rules('id_chapa', 'Selecione uma chapa!', 'required|differs[-1]');
+        $res = $this->form_validation->run();
+        
+        if(!$res){
+            //Retorna caso um dos campos não esteja preenchido corretamente!
+            $this->votar($this->input->post("id_eleicao"), friendly_url($this->input->post("nome_eleicao")));
+            //$this->index();
+            $message = urlencode(md5("campo_nao_preenchido"));
+            redirect(base_url("votacao/votar/") . $this->input->post("id_eleicao") . "/" . friendly_url($this->input->post("nome_eleicao")) . '/' . $message);
+            //var_dump(friendly_url($this->input->post("nome_eleicao")));
+
+        }
+
+
         $chave = $this->input->post("chavePrivada");
         //$election_name = $this->input->post("id_eleicao");
         $id_eleicao = $this->input->post("id_eleicao");
         $nome_eleicao = $this->input->post("nome_eleicao");
 
         $id_chapa = $this->input->post("id_chapa");
-        //$id_eleicao = "novo";
+       
+
 
 
         foreach ($this->eleicoes as $eleicao) {
@@ -100,7 +126,8 @@ class Votacao extends CI_Controller {
         $data_atual = date("Y-m-d H:i:s");
 
         if(!($data_atual >= $data_inicio && $data_atual <= $data_final)){
-            echo "Você não tem mais tempo para votar!";
+            $message = urlencode(md5("time_out"));
+            redirect(base_url("votacao/votar/") . $this->input->post("id_eleicao") . "/" . friendly_url($this->input->post("nome_eleicao")) . '/' . $message);
             die();
         }
 
@@ -108,6 +135,15 @@ class Votacao extends CI_Controller {
         
 
         if($chavePublica){
+            //Verifica se a chave publica é cadastrada no sistema, se não retorna um erro
+            $result_pk = $this->eleicao_model->buscar_chave_publica($chavePublica);
+
+            if(sizeof($result_pk) == 0){
+                $message = urlencode(md5("unknown_private_key"));
+                redirect(base_url("votacao/votar/") . $this->input->post("id_eleicao") . "/" . friendly_url($this->input->post("nome_eleicao")) . '/' . $message);
+                die();
+            }
+
             //verificar se a chave publica ja votou, se sim, retornar um erro
             $votes = $this->get_all_votes_from_election($eleicao->nome);
             
@@ -117,7 +153,8 @@ class Votacao extends CI_Controller {
                 if($vote["publicKey"] == $chavePublica){
                     //exibir mensagem de erro
                     //$this->votar();
-                    echo "Chave ja utilizada";
+                    $message = urlencode(md5("chave_ja_utilizada"));
+                    redirect(base_url("votacao/votar/") . $this->input->post("id_eleicao") . "/" . friendly_url($this->input->post("nome_eleicao")) . '/' . $message);
                     die();
                 }
             }
@@ -125,7 +162,7 @@ class Votacao extends CI_Controller {
             echo "Pode votar!";
 
             $aux_str = rand(); 
-            $address = md5($aux_str); 
+            $address = urlencode(md5($aux_str)); 
 
             $payload = array();
             $payload["userNumber"] = $chave;
@@ -136,10 +173,13 @@ class Votacao extends CI_Controller {
 
             $this->register_vote_blockchain($payload);
 
-            echo "OK";
+            $message = urlencode(md5("ok"));
+            redirect(base_url("votacao/votar/") . $this->input->post("id_eleicao") . "/" . friendly_url($this->input->post("nome_eleicao")) . '/' . $message);            
         }
         else{ //chave privada inválida
-            echo "erro";
+            $message = urlencode(md5("erro"));
+            redirect(base_url("votacao/votar/") . $this->input->post("id_eleicao") . "/" . friendly_url($this->input->post("nome_eleicao")) . '/' . $message);
+            die();
         }
         
         
@@ -220,7 +260,7 @@ class Votacao extends CI_Controller {
             CURLOPT_TIMEOUT => 15,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => "{\n    \"electionName\": \"nome da eleição\"\n}",
+            CURLOPT_POSTFIELDS => "{\n    \"electionName\": \"{$id}\"\n}",
             CURLOPT_HTTPHEADER => array(
                 "cache-control: no-cache",
                 "content-type: application/json",

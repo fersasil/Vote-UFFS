@@ -4,19 +4,27 @@
 <!-- Page Heading -->
 <div class="col-lg-12">
 
-    <div class="card position-relative">
-      <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Cadastrar nova chapa</h6>
-      </div>
-      <div class="card-body">
-          <?php 
-            if(count($eleicoes) == 0){
-                echo "<p>Nenhuma eleição disponível!</p></div></div></div>";
-            }
-            else{ //pega todo o resto da pagina
-          ?>
-          <p>Cadastre uma nova chapa abaixo! Aqui vão ser inseridos textos!</p>
-      </div>
+<?php 
+    if(count($eleicoes) == 0){
+        echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <strong></strong> 
+        </div>';
+    }
+    else{ //pega todo o resto da pagina
+    ?>
+
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+        </button>
+        <strong>Cadastre um nova chapa!</strong>
+        <hr>
+        <p>Para saber mais sobre o cadastro de chapas clique <a href="" class="alert-link">aqui</a>.</p>
+        <p>Após o cadastro cabe a moderaçao da eleição aceitar ou não sua solicitação!</p>
     </div>
 </div>
 <br>

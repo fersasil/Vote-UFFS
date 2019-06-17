@@ -46,8 +46,7 @@ class Votacao extends CI_Controller {
 
         $this->load->model(array("eleicao_model", "chapa_model"));
         //$res = $this->eleicoes->retorna_eleicoes_ativas();
-        $dados['chapas'] = $this->chapa_model->retorna_chapas_aprovadas($id);
-        
+        $dados['chapas'] = $this->chapa_model->retorna_chapas_aprovadas($id);        
 
         //Procurar as informações da eleição
         foreach ($this->eleicoes as $e) {

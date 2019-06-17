@@ -38,7 +38,7 @@ class Chapas extends CI_Controller {
     }
     
     public function imprime_chapa($id, $nome = null){
-        $dados['chapa'] = $this->chapa_model->retorna_chapa_por_id($id);
+        $dados['chapa'] = $this->chapa_model->retorna_chapa_e_membros($id);
 
         $dados['titulo'] = "";
         

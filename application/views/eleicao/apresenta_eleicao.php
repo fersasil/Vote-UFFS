@@ -29,10 +29,10 @@
               //}
             ?>
             <div class="row">
-                <div class="col-lg-6 text-center"><img class="img-responsive rounded-circle" src="http://placehold.it/200x200"></div>
-                <div class="col-lg-6">
-                    <p><h3 class="text-center h5 mb-4 text-gray-800"><?=$chapa->nome_chapa?></h3></p>
-                    <p><?=$chapa->descricao?></p>
+                <div class="col-md-6 text-center"><img class="img-responsive rounded-circle" src="http://placehold.it/200x200"></div>
+                <div class="col-md-6 text-center">
+                    <p><h3 class=" h5 mb-4 text-gray-800"><?=$chapa->nome_chapa?></h3></p>
+                    <p><?=$chapa->descricao_chapa?></p>
                     <p><a href="<?=base_url('chapa/info/' . $chapa->id_chapa . '/' . friendly_url($chapa->nome_chapa))?>">Saiba mais</a></p>
                 </div>
             </div>

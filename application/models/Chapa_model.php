@@ -58,15 +58,29 @@ class Chapa_model extends CI_Model{
     }
 
     
-    public function retorna_chapas_aprovadas($id){
-        //preparar variaveis
-        $this->db->select('nome_chapa, img, descricao, id_chapa');
-        $this->db->order_by('nome_chapa', 'ASC');
-        $this->db->where('eleicao_id', $id);
-        $this->db->where('aprovada', 1);
+    public function retorna_chapa_e_membros($id_chapa){
 
-        return $this->db->get("chapa")->result();
+        // return $this->db->query("SELECT * FROM chapa AS c JOIN chapa_membro AS c_m ON c.id_chapa = c_m.idChapa JOIN usuario AS u ON c_m.idMembro = u.id_usuario")->result();
+        $this->db->select("*");
+        $this->db->from("chapa AS c");
+        $this->db->JOIN("chapa_membro AS c_m", "c.id_chapa = c_m.idChapa");
+        $this->db->JOIN("usuario AS u", "c_m.idMembro = u.id_usuario");
+        $this->db->where("idChapa", $id_chapa);
+        
+        return $this->db->get()->result();
     }
+
+    public function retorna_chapas_aprovadas($id_eleicao){
+
+        // return $this->db->query("SELECT * FROM chapa AS c JOIN chapa_membro AS c_m ON c.id_chapa = c_m.idChapa JOIN usuario AS u ON c_m.idMembro = u.id_usuario")->result();
+        $this->db->select("nome_chapa, descricao_chapa, id_chapa");
+        $this->db->from("chapa");
+        $this->db->where("eleicao_id", $id_eleicao);
+        $this->db->where("chapa_aprovada", "1");
+        return $this->db->get()->result();
+    }
+
+    
 
     public function retorna_todas_chapas($id){
         //preparar variaveis

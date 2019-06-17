@@ -7,7 +7,7 @@ class Usuario_model extends CI_Model{
         //Preparar banco
         $this->db->where('email', $email);
         $this->db->where("senha", $senha);
-        $this->db->select('nome, super_usuario, img');
+        $this->db->select('nome, super_usuario, img_usuario');
         return $this->db->get("usuario")->result();
     }
 
@@ -15,7 +15,7 @@ class Usuario_model extends CI_Model{
         //Preparar banco
         $this->db->where('matricula', $matricula);
         $this->db->where("senha", $senha);
-        $this->db->select('nome, super_usuario, img');
+        $this->db->select('nome, super_usuario, img_usuario');
         return $this->db->get("usuario")->result();
     }
 

@@ -76,12 +76,42 @@
 
   </div>
 
-  
 
 </div>
 
+<br>
+<!--  -->
 
+<div class="row">
 
+  <div class="col-md-12">
+    <div class="card">
+        <div class="card-body">
+        <div id="successAtivarEleicao"></div>
+          <button type="button" name="" id="iniciar_eleicao" class="btn btn-lg btn-primary" btn-lg btn-block">Iniciar Eleição</button>
+          <button type="button" name="" id="encerrar_eleicao" class="btn btn-lg btn-primary" btn-lg btn-block">Encerrar Eleição</button>
+          <button type="button" name="" id="contar_votos" class="btn btn-lg btn-primary" btn-lg btn-block">Contar Votos</button>
+          <input type="hidden"  id="nome_eleicao_hidden" value="<?=$essa_eleicao->nome?>">
+          <input type="hidden"  id="id_eleicao_hidden" value="<?=$essa_eleicao->id_eleicao?>">
+        </div>
+        <div class="card-body">
+        <!-- Resposta da busca! -->
+          <div id="result_card" style="display: none" class="alert alert-secondary alert-dismissible fade show" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+              <div class="text-center">
+                <strong id="text-res_eleicao" class="h3"></strong> 
+              </div>
+            <hr>
+            <div class="row" id="resPlace"> 
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+
+</div>
 
 </div>
 <!-- /.container-fluid -->

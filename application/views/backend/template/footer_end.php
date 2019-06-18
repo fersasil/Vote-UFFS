@@ -99,7 +99,9 @@
         $("#cpf").mask("999.999.999-99");
     });
 
-
+    if($(".veri").html() === undefined){
+        $("#eleicoes_ativas_user").append('<a class="disabled collapse-item">Nenhuma eleição</a>');
+    }
 
     $(function(){
 
@@ -123,12 +125,149 @@
             doc.save('chave_privada.pdf');
         
         });
-
     });
+    
+    $(function(){
+        $("#iniciar_eleicao").on("click", function(){
+            const idEleicao = $("#id_eleicao_hidden").val();
+            const baseUrl = "<?=base_url()?>";
+            const sucessoHtml = 
+            `<div class="alert alert-success alert-dismissible fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <strong>Eleição iniciada!</strong> Você pode acompanhar os votos em tempo real!.
+            </div>`;
+            $.ajax({
+                method: "POST",
+                url: baseUrl + "admin/iniciar_eleicao",
+                data: { 
+                    "id_eleicao": idEleicao,
+                    "aut": "0f8f4803790b8f9267fd3920fe277bf9"
+                },
+                success: function(data){
+                    const res = JSON.parse(data);
+
+                    if(res.success === "true"){
+                        const lugarHtml = $("#successAtivarEleicao");
+                        lugarHtml.append(sucessoHtml);
+                    }
+                },
+                error: function(){
+
+                }
+            });
+
+
+        });
+
+        $("#encerrar_eleicao").on("click", function(){
+            const idEleicao = $("#id_eleicao_hidden").val();
+            const baseUrl = "<?=base_url()?>";
+            const nomeEleicao = $("#nome_eleicao_hidden").val();
+
+            const sucessoHtml = 
+            `<div class="alert alert-success alert-dismissible fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <strong>Eleição Finalizada!</strong> Você pode consultar a eleição no campo resultados!
+            </div>`;
+
+            $.ajax({
+                method: "POST",
+                url: baseUrl + "admin/encerrar_eleicao",
+                data: { 
+                    "id_eleicao": idEleicao,
+                    "aut": "0f8f4803790b8f9267fd3920fe277bf9",
+                    "nome_eleicao": nomeEleicao
+                },
+                success: function(data){
+                    console.log(data);
+                    const res = JSON.parse(data);
+
+                    if(res.success === "true"){
+                       const lugarHtml = $("#successAtivarEleicao");
+                        lugarHtml.append(sucessoHtml);
+                    }
+                },
+                error: function(){
+
+                }
+            });
+        });
+        let cardTitle;
+        let cardText;
+        let cardImg = "http://placehold.jp/240x240.png";
+
+        function htmlCard(cardTitle, cardText, cardImg){ 
+            return `<div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="card">
+                  <img class="card-img-top" src="${cardImg}" alt="">
+                  <div class="card-body">
+                    <h4 class="card-title">${cardTitle}</h4>
+                    <p class="card-text">${cardText}</p>
+                  </div>
+                </div>
+              </div>`;
+        }
+
+        $("#contar_votos").on("click", function(){
+            const nomeEleicao = $("#nome_eleicao_hidden").val();
+            const idEleicao = $("#id_eleicao_hidden").val();
+            const baseUrl = "<?=base_url()?>";
+            console.log(baseUrl + "admin/conta_votos");
+            $.ajax({
+                method: "POST",
+                url: baseUrl + "/admin/conta_votos",
+                data: { 
+                    "nomeEleicao": nomeEleicao, 
+                    "idEleicao": idEleicao,
+                    "verificador": "0f8f4803790b8f9267fd3920fe277bf9"
+                },
+                success: function(data){
+                    const res = JSON.parse(data);
+
+                    const lugarHtml = $("#resPlace");
+
+                    res.votos.forEach(function(voto){
+                        cardTitle = voto.nomeChapa;
+                        cardImg = "http://placehold.jp/240x240.png";
+                        maisInfo = "Aqui são informações a serem adicionadas no futuro";
+
+                        cardText = "Votos: <strong>" + voto.votos + "</strong><br>";
+
+                        lugarHtml.append(htmlCard(cardTitle, cardText, cardImg));
+                    });
+
+                    $("#text-res_eleicao").append(`Resultado da Eleição:<p>
+                        <strong>${res.vencedor.nome}</strong></p>
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                            <strong class="h4"><small><p>${res.tempo_restante}</p>
+                            <p>Número de votos: ${res.numeroDeVotos}<p>
+                            </small></strong>
+                            
+                        </div>
+                    `);
+                    
+                    $("#result_card").show("slow");
+                },
+                error: function(){
+
+                }
+            });
+        });
+        
+    })
+
+
+
 
 </script>
-
-
+    
+    
 </body>
 
 </html>

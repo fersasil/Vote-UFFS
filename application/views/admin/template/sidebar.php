@@ -48,9 +48,13 @@
               }
               else{
                 foreach($eleicoes as $eleicao){
+                  //if($eleicao->eleicao_ativa ==){
+                  //TODO campo de eleições administraveis!
+
             ?>
                   <a class="collapse-item" href="<?=base_url('admin/eleicao/' . $eleicao->id_eleicao .'/' . friendly_url($eleicao->nome))?>"><?=$eleicao->nome?></a>
             <?php 
+                  //}
                 }
               }
             ?>

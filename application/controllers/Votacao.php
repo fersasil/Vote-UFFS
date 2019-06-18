@@ -54,6 +54,7 @@ class Votacao extends CI_Controller {
                 $dados['eleicao'] = $e;
                 $dados["titulo"] = $e->nome;
                 $dados['nome_eleicao'] = $e->nome;
+                $dados['eleicaoAtiva'] = $e->eleicao_ativa;
 
                 break;
                 //var_dump($dados);
@@ -84,6 +85,8 @@ class Votacao extends CI_Controller {
 		$this->load->view("backend/template/footer_end");
     }
 
+    
+
     public function realizar_votar(){
         $this->index();
 
@@ -109,9 +112,6 @@ class Votacao extends CI_Controller {
 
         $id_chapa = $this->input->post("id_chapa");
        
-
-
-
         foreach ($this->eleicoes as $eleicao) {
             if($eleicao->id_eleicao == $id_eleicao){
                 $eleicao = $eleicao;
@@ -124,10 +124,20 @@ class Votacao extends CI_Controller {
         $data_final = date("Y-m-d H:i:s", strtotime($eleicao->fim_eleicao));
         $data_atual = date("Y-m-d H:i:s");
 
-        if(!($data_atual >= $data_inicio && $data_atual <= $data_final)){
-            $message = urlencode(md5("time_out"));
-            redirect(base_url("votacao/votar/") . $this->input->post("id_eleicao") . "/" . friendly_url($this->input->post("nome_eleicao")) . '/' . $message);
-            die();
+        if($eleicao->eleicao_ativa == 1){
+            //Verificar a hora!
+
+            if((!($data_atual >= $data_inicio && $data_atual <= $data_final))){
+                $message = urlencode(md5("time_out"));
+                redirect(base_url("votacao/votar/") . $this->input->post("id_eleicao") . "/" . friendly_url($this->input->post("nome_eleicao")) . '/' . $message);
+                die();
+            }
+        }
+        else{
+            //Verificar a hora, se a hora for dentro do range ativar a eleição
+            if($data_atual >= $data_inicio && $data_atual <= $data_final){
+                $this->eleicao_model->ativar_eleicao($eleicao->id_eleicao);
+            }
         }
 
         $chavePublica = $this->get_public_key($chave);

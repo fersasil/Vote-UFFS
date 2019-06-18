@@ -174,17 +174,19 @@
 </div>
 <!-- End of Main Content -->
 
+
+
 <script>
     const dataServidor = "<?=$dia_de_hoje?>"
     const dataInicioVotacao = "<?=$eleicao->inicio_eleicao?>"
     const dataFimVotacao = "<?=$eleicao->fim_eleicao?>"
-
- 
+    const eleicaoAtiva = <?=$eleicao->eleicao_ativa?>
+    
     const hServidor = new Date(dataServidor);
     const hInicio = new Date(dataInicioVotacao);
     const hFim = new Date(dataFimVotacao);
 
-    if(hServidor >= hInicio && hServidor <= hFim){
+    if(eleicaoAtiva === 1){
         document.getElementById("chavePrivada").disabled = false;
         document.getElementById("id_chapa").disabled = false;
         document.getElementById("votarEleicao").disabled = false;
@@ -193,6 +195,18 @@
         //Alterar a mensagem do campo info 
         document.getElementById("info-votation").style.display = "none";
         document.getElementById("info-v-ok").style.display = "block";
+    }
+    else{
+      if(hServidor >= hInicio && hServidor <= hFim && eleicaoAtiva === 1){
+        document.getElementById("chavePrivada").disabled = false;
+        document.getElementById("id_chapa").disabled = false;
+        document.getElementById("votarEleicao").disabled = false;
+        document.getElementById("btn-limpar").disabled = false;
+
+        //Alterar a mensagem do campo info 
+        document.getElementById("info-votation").style.display = "none";
+        document.getElementById("info-v-ok").style.display = "block";
+      } 
     }
 
 </script>

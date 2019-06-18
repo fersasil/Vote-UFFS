@@ -23,6 +23,30 @@ class Eleicao_model extends CI_Model{
         return $this->db->get("eleicao")->result();
     }
 
+    public function ativar_eleicao($id_eleicao){
+        //$dados['eleicao_ativa'] = "1";
+        $this->db->set("eleicao_ativa", "1");
+        $this->db->where("id_eleicao", $id_eleicao);
+        return $this->db->update("eleicao");
+    }
+
+    public function encerrar_eleicao($id_eleicao){
+        //$dados['eleicao_ativa'] = "1";
+        $this->db->set("eleicao_ativa", "0");
+        $this->db->where("id_eleicao", $id_eleicao);
+        return $this->db->update("eleicao");
+    }
+
+    public function atualizar_vencedor($id_eleicao, $id_vencedor, $total_votos, $vencedor_votos){
+        //$dados['eleicao_ativa'] = "1";
+        $this->db->set("id_vencedor", $id_vencedor);
+        $this->db->set("total_votos", $total_votos);
+        $this->db->set("vencedor_votos", $vencedor_votos);
+        $this->db->where("id_eleicao", $id_eleicao);
+        
+        return $this->db->update("eleicao");
+    }
+    
     public function retorna_todas_eleicoes(){
         //preparar variaveis
         $this->db->select('*');

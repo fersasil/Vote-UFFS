@@ -70,6 +70,8 @@ class Chapa_model extends CI_Model{
         return $this->db->get()->result();
     }
 
+   
+
     public function retorna_chapas_aprovadas($id_eleicao){
 
         // return $this->db->query("SELECT * FROM chapa AS c JOIN chapa_membro AS c_m ON c.id_chapa = c_m.idChapa JOIN usuario AS u ON c_m.idMembro = u.id_usuario")->result();

@@ -42,18 +42,22 @@
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Votações Disponíveis:</h6>
+            <div id="eleicoes_ativas_user">
             <?php
               if(count($eleicoes) == 0){
-                echo '<a class="collapse-item">Nenhuma eleição</a>';
+                echo '<a class="disabled collapse-item">Nenhuma eleição</a>';
               }
               else{
                 foreach($eleicoes as $eleicao){
+                  if($eleicao->eleicao_ativa){
             ?>
-                <a class="collapse-item" href="<?=base_url('votacao/votar/' . $eleicao->id_eleicao .'/' . friendly_url($eleicao->nome))?>"><?=$eleicao->nome?></a>
+                <a class="veri collapse-item" href="<?=base_url('votacao/votar/' . $eleicao->id_eleicao .'/' . friendly_url($eleicao->nome))?>"><?=$eleicao->nome?></a>
             <?php
+                  }
                 }
               }
             ?>
+            </div>
             <h6 class="collapse-header">Mais:</h6>
             <a class="collapse-item" href="<?=base_url('chapas/cadastrar_chapa')?>">Cadastrar uma chapa</a>
           </div>

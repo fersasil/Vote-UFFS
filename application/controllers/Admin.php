@@ -21,27 +21,23 @@ class Admin extends CI_Controller {
         
         
         $dados['admin'] = $this->session->userdata('user_logado')->super_usuario;
-        $this->eleicoes = $this->eleicao_model->retorna_todas_eleicoes();
+        $this->eleicoes = $this->eleicao_model->retorna_todas_eleicoes_ativas();
         
         date_default_timezone_set('America/Sao_Paulo');
     }
 
-	public function index(){
+    public function index(){
         
         $dados['eleicoes'] = $this->eleicoes;
         $dados["titulo"] = "Dashboard";
-        $this->load->view("backend/template/head", $dados);
-        $this->load->view("admin/template/sidebar");
-        //Middle
-        
-        $this->load->view("admin/help/candidatos_chapa");
-        
-        //Footer
-        $this->load->view("backend/template/footer");
-        $this->load->view("backend/template/footer_end");
 
-        //echo base_url();
-        //teste();
+
+
+        $this->load->view('admin/elementos/head', $dados);
+
+        $this->load->view('admin/elementos/menu');
+        $this->load->view('admin/elementos/index');
+        $this->load->view('admin/elementos/footer');
     }
 
     public function iniciar_eleicao(){
@@ -49,14 +45,28 @@ class Admin extends CI_Controller {
         $id_eleicao = $this->input->post("id_eleicao");
 
         if(!$aut){
-            exit("Você não tem permissão para acessar essa página diretamente!");
+            //exit("Você não tem permissão para acessar essa página diretamente!");
         }
 
-        $this->eleicao_model->ativar_eleicao($id_eleicao);
-        
-        $res['success'] = "true";
 
-        echo json_encode($res);
+        //Verificar se a eleição ja foi ativa antes
+        foreach ($this->eleicoes as $eleicao) {
+            if($eleicao->id_eleicao == $id_eleicao){
+                break;
+            }
+        }
+
+        if($eleicao->eleicao_ja_iniciada == 0){
+            $this->eleicao_model->ativar_eleicao($id_eleicao);
+            $res['success'] = "true";
+
+            echo json_encode($res);
+        }
+        else{
+            $res['success'] = "false";
+
+            echo json_encode($res);
+        }
     }
 
     public function encerrar_eleicao(){
@@ -69,51 +79,65 @@ class Admin extends CI_Controller {
             exit("Você não tem permissão para acessar essa página diretamente!");
         }
 
-        //$this->eleicao_model->encerrar_eleicao($id_eleicao);
-        //Eleição ativa = false
-        //Calcular vencedor
-        //Colocar total de votantes
-        //Vencedor
-        
-        $resultados = $this->calcula_resultados($nome_eleicao, $id_eleicao);
+        //Verificar se a eleição ainda esta ativa
+        foreach ($this->eleicoes as $eleicao) {
+            if($eleicao->id_eleicao == $id_eleicao){
+                break;
+            }
+        }
 
-        $id_vencedor = $resultados['vencedor']['id'];
-        $total_votos = $resultados['numeroDeVotos'];
-        $vencedor_votos = $resultados['vencedor']['votos'];
-        
-        $this->eleicao_model->encerrar_eleicao($id_eleicao);
-        $this->eleicao_model->atualizar_vencedor($id_eleicao, $id_vencedor, $total_votos, $vencedor_votos);
+  
+            $resultados = $this->calcula_resultados($nome_eleicao, $id_eleicao);
 
-        $res['success'] = "true";
 
-        echo json_encode($res);
+            if($resultados['vencedor']['votos'] == -1){
+                $id_vencedor = null;
+                $vencedor_votos = null;
+                $total_votos = -1;
+            }
+            else{
+                $id_vencedor = $resultados['vencedor']['id'];
+                $total_votos = $resultados['numeroDeVotos'];
+                $vencedor_votos = $resultados['vencedor']['votos'];
+            }
+            
+            $this->eleicao_model->encerrar_eleicao($id_eleicao);
+            $this->eleicao_model->atualizar_vencedor($id_eleicao, $id_vencedor, $total_votos, $vencedor_votos);
+
+            $res['success'] = "true";
+
+            echo json_encode($res);
+    
     }
 
-
-    public function cadastrar_eleicao(){
+    public function cadastrar_eleicao($success = null){
         $this->load->helper('form');
         
 
-        $dados['eleicoes'] = $this->eleicoes;
+        $dados['eleicoes'] = $this->eleicao_model->retorna_todas_eleicoes_ativas();
 
-        $dados["titulo"] = "Dashboard";
-        $dados["admin"] = true;
-        $this->load->view("backend/template/head", $dados);
-        $this->load->view("admin/template/sidebar");
-        //Middle
-        
-        $this->load->view("admin/cadastrar_eleicao");
-        
-        //Footer
-        $this->load->view("backend/template/footer");
-        $this->load->view("backend/template/footer_end");
+        $dados["titulo"] = "Cadastrar Eleições";
+        $dados["success"] = $success;
+       
+        $this->load->view('admin/elementos/head', $dados);
+
+        $this->load->view('admin/elementos/menu');
+        $this->load->view('admin/elementos/telas/cadastrar_eleicao');
+        $this->load->view('admin/elementos/footer');
     }
 
-    public function eleicao($id_eleicao, $nome_eleicao = null){
+    public function eleicao($id_eleicao, $nome_eleicao = null, $res = null){
         $this->load->library('table');
-        $dados['chapas'] = $this->chapa_model->retorna_chapa_e_membros($id_eleicao);
+        //$dados['chapa_membros'] = $this->chapa_model->retorna_chapa_e_membros($id_eleicao);
+        $dados['chapas'] = $this->chapa_model->retorna_chapa_info($id_eleicao);
+
 
         $dados['eleicoes'] = $this->eleicoes;
+        $dados['res'] = $res;
+
+        $dados['nome_eleicao'] = $nome_eleicao;
+        $dados['id_eleicao'] = $id_eleicao;
+
 
         foreach ($this->eleicoes as $eleicao) {
             if($eleicao->id_eleicao == $id_eleicao){
@@ -124,20 +148,54 @@ class Admin extends CI_Controller {
 
         $dados['titulo'] = $dados['essa_eleicao']->nome;
 
-        $this->load->view("backend/template/head", $dados);
-        $this->load->view("admin/template/sidebar");
-        //Middle
+        $this->load->view('admin/elementos/head', $dados);
+
+        $this->load->view('admin/elementos/menu');
+        $this->load->view('admin/elementos/telas/eleicao');
+        $this->load->view('admin/elementos/footer');
+
+
+    }
+
+    public function aprovar_chapa($id_eleicao, $id_chapa, $nome_chapa){
+        if(!$dados['admin'] = $this->session->userdata('user_logado')->super_usuario){ //verificar se é super usuário, caso não for exibir erro
+            echo "Você não tem permissão para acessar essa página!";
+            die();
+        }
+
+        $this->chapa_model->aprovar_chapa($id_chapa);
+
+        redirect(base_url('admin/eleicao/' .  $id_eleicao . '/' . $nome_chapa . '/' . true));
+    }
+
+    public function rejeitar_chapa($id_eleicao, $id_chapa, $nome_chapa){
+        if(!$dados['admin'] = $this->session->userdata('user_logado')->super_usuario){ //verificar se é super usuário, caso não for exibir erro
+            echo "Você não tem permissão para acessar essa página!";
+            die();
+        }
+
+        $this->chapa_model->excluir_chapa($id_chapa);
+
+        redirect(base_url('admin/eleicao/' .  $id_eleicao . '/' . $nome_chapa . '/' . md5("rejeitada")));
         
-        $this->load->view("admin/chapas_eleicao");
+
+    }
+
+    public function excluir_chapa($id_eleicao, $id_chapa, $nome_chapa){
+        if(!$dados['admin'] = $this->session->userdata('user_logado')->super_usuario){ //verificar se é super usuário, caso não for exibir erro
+            echo "Você não tem permissão para acessar essa página!";
+            die();
+        }
+
+        $this->chapa_model->excluir_chapa($id_chapa);
+
+        redirect(base_url('admin/eleicao/' .  $id_eleicao . '/' . $nome_chapa . '/' . md5("excluida")));
         
-        //Footer
-        $this->load->view("backend/template/footer");
-        $this->load->view("backend/template/footer_end");
     }
 
     public function nova_eleicao(){
         //Fazer as verificações
-        $this->form_validation->set_rules('nome_eleicao', 'nome da eleição', 'required');
+        $this->form_validation->set_rules('nome_eleicao', 'nome da eleição', 'required|is_unique[eleicao.nome]');
         $this->form_validation->set_rules('descricao_eleicao', 'descrição da eleição', 'required');
 
         $this->form_validation->set_rules('inicioEleicao', 'Inicio da eleicao é necessário', 'required');
@@ -149,6 +207,8 @@ class Admin extends CI_Controller {
         $this->form_validation->set_rules('numero_max_chapas', 'numero máximo de chapas', 'required');
         $this->form_validation->set_rules('tipo_votacao', 'tipo da votação', 'required');
 
+        $img = "http://placehold.jp/400x400.png";
+
         if($this->form_validation->run()){
             //gravar no banco
             //Pegar as variaveis
@@ -159,11 +219,11 @@ class Admin extends CI_Controller {
             $numero_max_chapas = $this->input->post('numero_max_chapas');
             $tipo_votacao = $this->input->post('tipo_votacao');
 
-            $this->eleicao_model->cadastrar_eleicao($nome_eleicao, $descricao_eleicao, $inicio_eleicao, $fim_eleicao, $numero_max_chapas, $tipo_votacao);
+            $this->eleicao_model->cadastrar_eleicao($nome_eleicao, $descricao_eleicao, $inicio_eleicao, $fim_eleicao, $numero_max_chapas, $tipo_votacao, $img);
            
            
             //Voltar a tela de cadastrar eleições ou transferir para o menu da votação
-            $this->cadastrar_eleicao();
+            $this->cadastrar_eleicao('success');
         }
         else{
             $this->cadastrar_eleicao();
@@ -326,10 +386,61 @@ class Admin extends CI_Controller {
 
 
 
+    public function eleicoes_finalizadas(){
+        $dados['eleicoes_finalizadas'] = $this->eleicao_model->retorna_todas_eleicoes_encerradas();
+        $dados['eleicoes'] = $this->eleicao_model->retorna_todas_eleicoes_ativas();
+
+        $dados["titulo"] = "Cadastrar Eleições";
+       
+        $this->load->view('admin/elementos/head', $dados);
+
+        $this->load->view('admin/elementos/menu');
+        $this->load->view('admin/elementos/eleicoes_finalizadas');
+        $this->load->view('admin/elementos/footer');
+    }
 
 
+    public function exibir_eleicoes($id, $nome_eleicao){
+        $eleicoes = $this->eleicao_model->retorna_todas_eleicoes_encerradas();
+
+        foreach ($eleicoes as $e) {
+            if($e->id_eleicao == $id){
+                break;
+            }
+        }
+        
+        $votos = $this->get_all_votes_from_election($e->nome);
+        $chapas = $this->chapa_model->retorna_nome_chapas_eleicao_fim($id);
 
 
+		foreach ($chapas as $c) {
+			$count = 0;
+			for ($i = 0; $i < sizeof($votos); $i++) {
+				if($c->id_chapa == $votos[$i]['candidateNumber']){
+					$votos[$i]['candidateName'] = $c->nome_chapa;
+					$count++;	
+				}
+			}
+
+			$chapa_votos[] = array("nomeChapa" => $c->nome_chapa, "votos" => $count);
+        }
+
+        
+
+        $dados['votos'] = $votos;
+		$dados['eleicao'] = $e;
+		$dados['eleicoes'] = $this->eleicao_model->retorna_todas_eleicoes_ativas();
+        //$dados['resultado_json'] = json_encode($chapa_votos);
+        $dados["titulo"] = "Resultado da eleição";
+
+        
+
+        
+        $this->load->view('admin/elementos/head', $dados);
+        $this->load->view('admin/elementos/menu');
+        $this->load->view('admin/elementos/resultado_eleicao');
+        $this->load->view('admin/elementos/footer');
+    }
 
 
 
@@ -396,4 +507,6 @@ class Admin extends CI_Controller {
         $this->load->view("backend/template/footer");
         $this->load->view("backend/template/footer_end");
     }
+
+    
 }

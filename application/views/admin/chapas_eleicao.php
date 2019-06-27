@@ -88,9 +88,13 @@
     <div class="card">
         <div class="card-body">
         <div id="successAtivarEleicao"></div>
-          <button type="button" name="" id="iniciar_eleicao" class="btn btn-lg btn-primary" btn-lg btn-block">Iniciar Eleição</button>
-          <button type="button" name="" id="encerrar_eleicao" class="btn btn-lg btn-primary" btn-lg btn-block">Encerrar Eleição</button>
-          <button type="button" name="" id="contar_votos" class="btn btn-lg btn-primary" btn-lg btn-block">Contar Votos</button>
+          
+          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+              <button id="iniciar_eleicao" class="btn btn-secondary">Iniciar Eleição</button>
+              <button  id="contar_votos" class="btn btn-secondary">Contar Votos</button>
+              <button  id="encerrar_eleicao" class="btn btn-secondary">Encerrar Eleição</button>
+          </div>
+
           <input type="hidden"  id="nome_eleicao_hidden" value="<?=$essa_eleicao->nome?>">
           <input type="hidden"  id="id_eleicao_hidden" value="<?=$essa_eleicao->id_eleicao?>">
         </div>

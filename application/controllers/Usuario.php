@@ -13,6 +13,10 @@ class Usuario extends CI_Controller {
 
 	public function index(){
         if($this->session->userdata('logado')){
+            if($this->session->userdata('user_logado')->super_usuario){
+                redirect(base_url('admin'));                
+            }
+
             redirect(base_url('home'));
         }
         
@@ -25,6 +29,10 @@ class Usuario extends CI_Controller {
 
     public function login(){
         if($this->session->userdata('logado')){
+            if($this->session->userdata('user_logado')->super_usuario){
+                redirect(base_url('admin'));                
+            }
+
             redirect(base_url('home'));
         }
 
@@ -37,9 +45,11 @@ class Usuario extends CI_Controller {
 
     public function cadastrar(){
         if($this->session->userdata('logado')){
-            redirect(base_url('home'));
+            if($this->session->userdata('user_logado')->super_usuario){
+                redirect(base_url('admin'));                
+            }
 
-            //TODO se for super usuário direcionar para a página de super user 
+            redirect(base_url('home'));
         }
 
         $dados['titulo'] = "Cadastrar";
@@ -50,6 +60,10 @@ class Usuario extends CI_Controller {
 
     public function esqueceu_senha(){
         if($this->session->userdata('logado')){
+            if($this->session->userdata('user_logado')->super_usuario){
+                redirect(base_url('admin'));                
+            }
+
             redirect(base_url('home'));
         }
 
@@ -103,12 +117,12 @@ class Usuario extends CI_Controller {
                 $dados = $this->umodel->verifica_usuario_matricula($usuario, $senha);
                 if(count($dados)){ //usuario e senha corretos, mandar mensagem!
                     //iniciar uma sessão
-                    echo "LOGADO";
                     $session_data['user_logado'] = $dados[0]; //é um array, mas só tem um valor
                     $session_data['logado'] = TRUE;
 
                     //salvar na sessão
                     $this->session->set_userdata($session_data);
+                    
                     //Verificar se o usuário é superusuário ou não
                     if($dados[0]->super_usuario){
                         redirect(base_url('admin'));
@@ -130,19 +144,19 @@ class Usuario extends CI_Controller {
                 $dados = $this->umodel->verifica_usuario_email($usuario, $senha);
                 if(count($dados)){ //usuario e senha corretos, mandar mensagem!
                     //iniciar uma sessão
-                    echo "LOGADO";
                     $session_data['user_logado'] = $dados[0]; //é um array, mas só tem um valor
                     $session_data['logado'] = TRUE;
 
                     //salvar na sessão
                     $this->session->set_userdata($session_data);
-                    //Verificar se o usuário é superusuário ou não
-                    //caso for mandar para a tela de adminsitração, se não para a tela normal
-                    //Mandar para a home do admin
-                    //var_dump($session_data['user_logado']);
+                   
+                    if($dados[0]->super_usuario){
+                        redirect(base_url('admin'));
+                    }
+                    else{ //usuário normal
+                        redirect(base_url('home'));
+                    }
                     
-                    redirect(base_url('home'));
-
                 }
                 else{//senha ou usuário errado, mandar mensagem dizendo isso
                     echo "USUARIO E SENHA ERRADOS";

@@ -31,7 +31,7 @@
 <?=validation_errors('<div class="alert alert-danger">', '</div>');?>
 
 <?php
-    if($sucesso){
+    if($sucesso == 1){
 ?>
 <div class="alert alert-success alert-dismissible fade show" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -42,8 +42,20 @@
     <hr>
     <p>Agora só falta ser aprovado pela moderação!</p>
 </div>
-    <?php }?>
-<?=form_open(base_url('chapas/cria_nova_chapa'));?>
+    <?php }
+    else if($sucesso == false){
+    ?>
+
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <strong>Um ou mais candidatos ja pertencem a uma chapa vinculada a esta eleição!</strong> 
+    </div>
+
+    <?php } 
+
+    echo form_open(base_url('chapas/cria_nova_chapa'));?>
 <div class="col-lg-12 row">
     <div class="col-lg-6">
         <div class="card position-relative">
@@ -57,7 +69,7 @@
                         <option value="-1" selected disabled hidden>Escolha aqui</option>
                     
                     <?php
-                        foreach ($eleicoes as $eleicao) {
+                        foreach ($eleicoes_ativas as $eleicao) {
                     ?>
                         <option value="<?=$eleicao->id_eleicao?>"><?=$eleicao->nome?></option>
                     <?php

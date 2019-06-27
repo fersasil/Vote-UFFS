@@ -9,7 +9,7 @@
     <!-- Page -->
     <div class="card">
         <div class="card-header">
-            Gerando a sua chave pública
+            Pesquise a eleição
         </div>
         <div class="card-body">
             <div class="row justify-content-center align-items-center">    
@@ -17,7 +17,7 @@
                     <!-- formulario de pesquisa -->
                     <?=form_open(base_url("ajuda/pesquisa_eleicao_por_nome"))?>
                     <div class="form-group">
-                        <label for=""><strong>Digite o nome da votação!</strong></label>
+                        <label for=""><strong>Digite o nome da Eleição!</strong></label>
                         <input type="text" autocomplete="" class="form-control" name="nomeEleicao" id="nomeEleicao" aria-describedby="descricaoEleicao" placeholder="">
                         <small id="descricaoEleicao" class="form-text text-muted">O nome da votação deve ser exatamente o mesmo que consta no sistema! Caso não o possua contate um administrador. Ex:"Eleição teste"</small>
                     </div>

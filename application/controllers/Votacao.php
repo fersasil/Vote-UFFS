@@ -124,21 +124,52 @@ class Votacao extends CI_Controller {
         $data_final = date("Y-m-d H:i:s", strtotime($eleicao->fim_eleicao));
         $data_atual = date("Y-m-d H:i:s");
 
-        if($eleicao->eleicao_ativa == 1){
+        /*if($eleicao->eleicao_ativa == 1){
             //Verificar a hora!
 
-            if((!($data_atual >= $data_inicio && $data_atual <= $data_final))){
+            if($data_atual > $data_final){
                 $message = urlencode(md5("time_out"));
+                //Desativar eleição!
+                $this->eleicao_model->encerrar_eleicao($eleicao->id_eleicao);
+                
                 redirect(base_url("votacao/votar/") . $this->input->post("id_eleicao") . "/" . friendly_url($this->input->post("nome_eleicao")) . '/' . $message);
                 die();
             }
-        }
-        else{
-            //Verificar a hora, se a hora for dentro do range ativar a eleição
-            if($data_atual >= $data_inicio && $data_atual <= $data_final){
+            else if($data_atual >= $data_inicio || $eleicao->eleicao_ja_iniciada){
                 $this->eleicao_model->ativar_eleicao($eleicao->id_eleicao);
             }
         }
+        else{
+            //Verificar a hora, se a hora for dentro do range ativar a eleição caso ela não tenha sido ativa ainda
+            if($data_atual >= $data_inicio && $data_atual <= $data_final && !$eleicao->eleicao_ja_iniciada){
+                $this->eleicao_model->ativar_eleicao($eleicao->id_eleicao);
+
+            }
+        }*/
+
+        if($eleicao->eleicao_ativa == 1 && $eleicao->eleicao_ja_iniciada == 1){
+            if($data_atual > $data_final){ //Verificar se ainda é possível votar pela hora
+                //encerrar eleição
+                $message = urlencode(md5("time_out"));
+                $this->eleicao_model->encerrar_eleicao($eleicao->id_eleicao);
+                redirect(base_url("votacao/votar/") . $this->input->post("id_eleicao") . "/" . friendly_url($this->input->post("nome_eleicao")) . '/' . $message);
+            }
+            //Votar
+        }
+        else{ //Verificar se a eleição pode acontecer
+            //Hora
+            if($data_atual >= $data_inicio && $data_atual <= $data_final){ //Ativar eleição e continuar
+                //Verificar se a eleição ja foi inciiada, se não, a iniciar!
+                if($eleicao->eleicao_ja_iniciada == 0){
+                    $this->eleicao_model->ativar_eleicao($eleicao->id_eleicao);
+                }
+            }
+            else{
+                redirect(base_url("votacao/votar/") . $this->input->post("id_eleicao") . "/" . friendly_url($this->input->post("nome_eleicao")) . '/' . $message);
+            }
+
+        }
+
 
         $chavePublica = $this->get_public_key($chave);
         

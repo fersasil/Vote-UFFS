@@ -1,15 +1,29 @@
-<!-- Begin Page Content -->
+<div id="content-wrapper">
+
 <div class="container-fluid">
 
-<!-- Page Heading -->
-<h1 class="h3 mb-2 text-gray-800"><?=$eleicao->nome?></h1>
+  <!-- Breadcrumbs-->
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a href="<?=base_url()?>">Home</a>
+    </li>
+    <li class="breadcrumb-item">
+        <a href="<?=base_url('admin/eleicoes_finalizadas')?>">Eleições Finalizadas</a>
+    </li>
+    <li class="breadcrumb-item active"><?=$eleicao->nome?></li>
+  </ol>
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0"><?=$eleicao->nome?></h1>
+    </div>
+
     
 <!-- Content Row -->
 
 <div class="row">
 
 <!-- Area Chart -->
-<div class="col-xl-8 col-lg-7">
+<div class="col-xl-12 col-lg-12">
   <div class="card shadow mb-4">
     <!-- Card Header - Dropdown -->
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -23,20 +37,7 @@
 </div>
 
 <!-- Pie Chart -->
-<div class="col-xl-4 col-lg-5">
-  <div class="card shadow mb-4">
-    <!-- Card Header - Dropdown -->
-    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-      <h6 class="m-0 font-weight-bold text-primary">Votos</h6>
-    </div>
-    <!-- Card Body -->
-    <div class="card-body">
-      <div class="chart-pie pt-4 pb-2">
-        <canvas id="myChart" width="1600" height="900"></canvas>
-      </div>
-    </div>
-  </div>
-</div>
+
 </div>
 
 
@@ -84,8 +85,5 @@
 </div>
 
 </div>
-<!-- /.container-fluid -->
 
 </div>
-<!-- End of Main Content -->
-

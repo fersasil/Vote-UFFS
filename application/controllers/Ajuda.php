@@ -51,7 +51,7 @@ class Ajuda extends CI_Controller {
     public function pesquisar_na_blockchain(){
         $this->load->helper('form');
         $dados['eleicoes'] = $this->eleicoes;
-        $dados["titulo"] = "Gerar chave";
+        $dados["titulo"] = "Pesquisar eleição por nome";
 
         $this->load->view("backend/template/head", $dados);
         $this->load->view("backend/template/sidebar");
@@ -74,11 +74,44 @@ class Ajuda extends CI_Controller {
         $this->mostrar_resultados($eleicao_info, $nome_eleicao);
     }
 
-    public function historico_votos(){
+    public function pesquisa_chave_publica(){
+        //TODO pegar o nome de todas as eleições e verificar se o digitado esta no banco! se sim, fazer a busca na blockchain
 
+        $chavePublica = $this->input->post("chavePublica");
+        //vol
+        $address = $this->get_familyCode();
+
+
+        $eleicao_info = json_decode($this->get_info_election_bc($address));
+
+        $user_votes = null;
+
+        foreach ($eleicao_info as $voto) {
+            if($voto->publicKey == $chavePublica){
+                $user_votes[] = $voto;
+            }
+        }
+
+
+        $this->mostrar_resultados(json_encode($user_votes), "chave publica");
     }
 
-    public function mostrar_resultados($eleicao_info, $nome_eleicao){
+    public function historico_votos(){
+        $this->load->helper('form');
+        $dados['eleicoes'] = $this->eleicoes;
+        $dados["titulo"] = "Histórico de votos";
+
+        $this->load->view("backend/template/head", $dados);
+        $this->load->view("backend/template/sidebar");
+        $this->load->view("backend/template/topbar");
+
+        $this->load->view("backend/help_pages/historico_votos");
+
+
+        $this->load->view("backend/template/footer_end");
+    }
+
+    public function mostrar_resultados($eleicao_info, $nome_eleicao = null){
         
         $dados['eleicoes'] = $this->eleicoes;
         $dados["titulo"] = "Resultado da busca por " . $nome_eleicao;
@@ -152,6 +185,38 @@ class Ajuda extends CI_Controller {
         $result = json_decode($response, true);
 
         return $result['familyCode'] . $result['electionCode'];
+    }
+
+    private function get_familyCode(){
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_PORT => "8084",
+            CURLOPT_URL => "http://localhost:8084/familyCode/",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 15,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_HTTPHEADER => array(
+                "cache-control: no-cache",
+                "content-type: application/json",
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if ($err) {
+        echo "cURL Error #:" . $err;
+        } 
+
+        $result = json_decode($response, true);
+
+        return $result['familyName'];
     }
 
     public function getting_pub_key(){

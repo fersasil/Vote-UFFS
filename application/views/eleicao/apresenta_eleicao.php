@@ -177,16 +177,20 @@
 
 
 <script>
-    const dataServidor = "<?=$dia_de_hoje?>"
-    const dataInicioVotacao = "<?=$eleicao->inicio_eleicao?>"
-    const dataFimVotacao = "<?=$eleicao->fim_eleicao?>"
-    const eleicaoAtiva = <?=$eleicao->eleicao_ativa?>
+    const dataServidor = "<?=$dia_de_hoje?>";
+    const dataInicioVotacao = "<?=$eleicao->inicio_eleicao?>";
+    const dataFimVotacao = "<?=$eleicao->fim_eleicao?>";
+    const eleicaoAtiva = "<?=$eleicao->eleicao_ativa?>";
+    const eleicaoJaIniciada = "<?=$eleicao->eleicao_ja_iniciada?>";
+
     
     const hServidor = new Date(dataServidor);
     const hInicio = new Date(dataInicioVotacao);
     const hFim = new Date(dataFimVotacao);
 
-    if(eleicaoAtiva === 1){
+    //Eleição ativa é um campo para os adms
+
+    if(eleicaoAtiva === "1" && eleicaoJaIniciada === "1"){
         document.getElementById("chavePrivada").disabled = false;
         document.getElementById("id_chapa").disabled = false;
         document.getElementById("votarEleicao").disabled = false;
@@ -197,7 +201,8 @@
         document.getElementById("info-v-ok").style.display = "block";
     }
     else{
-      if(hServidor >= hInicio && hServidor <= hFim && eleicaoAtiva === 1){
+      console.log("Oi");
+      if(hServidor >= hInicio && hServidor <= hFim && (eleicaoJaIniciada === "0")){
         document.getElementById("chavePrivada").disabled = false;
         document.getElementById("id_chapa").disabled = false;
         document.getElementById("votarEleicao").disabled = false;

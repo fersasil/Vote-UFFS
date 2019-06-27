@@ -54,14 +54,20 @@ class Chapas extends CI_Controller {
     
     public function cadastrar_chapa($info = null){
         $dados['eleicoes'] = $this->eleicoes;
+        $dados['eleicoes_ativas'] = $this->eleicao_model->eleicoes_ativas_e_nao_iniciadas();
+
         $dados['titulo'] = "Cadastrar Chapa";
         
-        if($info){
-            $dados['sucesso'] = true;
-        }
-        else{
+        if($info == 'erro'){
             $dados['sucesso'] = false;            
         }
+        else if($info == null){
+            $dados['sucesso'] = -1;
+        }
+        else{
+            $dados['sucesso'] = true;
+        }
+
 
         $this->load->view("backend/template/head", $dados);
         $this->load->view("backend/template/sidebar");
@@ -72,6 +78,7 @@ class Chapas extends CI_Controller {
         $this->load->view("backend/template/footer");
         $this->load->view("backend/template/footer_end");
     }
+
 
     public function cria_nova_chapa(){
         //validação dos campos
@@ -167,11 +174,15 @@ class Chapas extends CI_Controller {
             $secretario['concorre_eleicao'] = true;
 
             for($i = 1; $i <= $numero_suplentes; $i++){
-                //$suplente['suplente_' . $i .' _nome'] = $this->input->post('suplente_' . $i .' _nome');
-                $suplente['suplente_' . $i . '_matricula'] = $this->input->post('suplente_' . $i . '_matricula', 'matricula do suplente');
-                //$suplente['suplente_' . $i . '_semestre'] = $this->input->post('suplente_' . $i . '_semestre', 'semestre do suplente');
-                $suplente['suplente_' . $i . '_descricao'] = $this->input->post('suplente_' . $i . '_descricao', 'descricao do suplente');
-                $suplente['suplente_' . $i . '_concorre_eleicao'] = true;
+                $matricula = $this->input->post('suplente_' . $i . '_matricula', 'matricula do suplente');
+                $descricaoS = $this->input->post('suplente_' . $i . '_descricao', 'descricao do suplente');
+                $idS = $this->usuario_model->matricula_para_id($matricula);
+
+                $suplente[] = array(
+                    'matricula' => $matricula,
+                    'descricao' => $descricaoS,
+                    'id' => $idS, 
+                    'concorre_eleicao' => true);
             }
 
             
@@ -216,38 +227,85 @@ class Chapas extends CI_Controller {
                 //TODO retorno com o erro a view
             }
 
-            for($i = 1; $i <= $numero_suplentes; $i++){
-                //var_dump($suplente);
-                //die();
-                $suplente['suplente_' . $i .'_id'] = $this->usuario_model->matricula_para_id($suplente['suplente_' . $i .'_matricula']);
-                
-                //APENAS PARA TESTES
-                //$suplente['suplente_' . $i .' _id'] = $i;
-            }
 
-            
+
             //$this->chapa_model->cria_nova_chapa($chapa_info, $presidente['id'], $presidente['descricao'], $vice['id'], $vice['descricao'], $tesoureiro['id'], $tesoureiro['descricao'], $secretario['id'], $secretario['descricao'], $suplente);
             $this->chapa_model->cria_chapa($chapa_info);
             
             $idChapa = $this->chapa_model->procura_id_por_nome($chapa_info["nome_chapa"]);
             $idChapa = $idChapa[0]->id_chapa;
+
+            //Verificar se o usuário esta cadasatrado na eleição
+
+            $verificador = $this->verifica_cadastro_eleicao($idChapa, $chapa_info['eleicao_id'], $presidente['id'], $vice['id'], $tesoureiro['id'], $secretario['id'], $suplente);
+
+            if($verificador){
+                redirect(base_url('chapas/cadastrar_chapa/') . "erro");
+            }
  
+            
             $this->chapa_model->cadastrar_membro($presidente['id'], $presidente['descricao'], $idChapa, "Presidente");
             $this->chapa_model->cadastrar_membro($vice['id'], $vice['descricao'], $idChapa, "Vice-Presidente");
             $this->chapa_model->cadastrar_membro($tesoureiro['id'], $tesoureiro['descricao'], $idChapa, "Tesoureiro");
             $this->chapa_model->cadastrar_membro($secretario['id'], $secretario['descricao'], $idChapa, "Secretario");
 
-            for($i = 1; $i <= $numero_suplentes; $i++){
-                $this->chapa_model->cadastrar_membro($suplente['suplente_' . $i .'_id'], $suplente['suplente_' . $i . '_descricao'], $idChapa, "Suplente");            
+            foreach ($suplente as $s) {
+                $this->chapa_model->cadastrar_membro($s['id'][0]->id_usuario, $s['descricao'], $idChapa, "Suplente");                            
             }
 
             //Redirecionar para a pagina que estava e mostrar uma mensagem nela!
             //ou ir para uma página de pendentes...
-            redirect(base_url('cadastrar-chapa/'));
+            redirect(base_url('chapas/cadastrar_chapa/') . "sucesso");
         }
         else{   //caso de erro
             $this->cadastrar_chapa();
         }
+
+    }
+
+
+    private function verifica_cadastro_eleicao($chapa_id, $id_eleicao, $presidente_id, $vice_id, $tesoureiro_id, $secretario_id, $suplente){
+        $id_membros = $this->chapa_model->retorna_id_users_cadastrados_eleicao($id_eleicao);
+        
+        //var_dump($chapas_aprovadas);
+        $ja_cadastrado = false;
+
+
+        
+        foreach ($id_membros as $id) {
+            if($id->idMembro == $presidente_id || $vice_id == $id->idMembro || $tesoureiro_id == $id->idMembro || $secretario_id == $id->idMembro){
+                $ja_cadastrado = true;
+            }
+
+            if($suplente){
+                foreach ($suplente as $s) {
+                    if($s['id'] == $id->idMembro){
+                        $ja_cadastrado = true;
+                    }
+                }
+            }
+            
+        }
+
+        //Verificar se os membros tem o mesmo id
+        if($presidente_id == $vice_id || $presidente_id == $tesoureiro_id || $presidente_id == $secretario_id)
+            $ja_cadastrado = true;
+
+        if($vice_id == $tesoureiro_id || $vice_id == $secretario_id)
+            $ja_cadastrado = true;
+
+        if($tesoureiro_id == $secretario_id)
+            $ja_cadastrado = true;
+
+        if($suplente){
+            foreach ($suplente as $s) {
+                if($presidente_id == $s['id'] || $vice_id == $s['id'] || $secretario_id == $s['id'] || $tesoureiro_id == $s['id'])
+                    $ja_cadastrado = true;
+            }
+        }
+
+
+        return $ja_cadastrado;
 
     }
 }

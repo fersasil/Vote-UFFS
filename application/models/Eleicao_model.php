@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Eleicao_model extends CI_Model{
 
-    public function cadastrar_eleicao($nome_eleicao, $descricao_eleicao, $inicio_eleicao, $fim_eleicao, $numero_max_chapas, $tipo_votacao){
+    public function cadastrar_eleicao($nome_eleicao, $descricao_eleicao, $inicio_eleicao, $fim_eleicao, $numero_max_chapas, $tipo_votacao, $img){
         //preparar variaveis
         $dados['nome'] = $nome_eleicao;
         $dados['descricao'] = $descricao_eleicao;
@@ -11,7 +11,8 @@ class Eleicao_model extends CI_Model{
         $dados['fim_eleicao'] = $fim_eleicao;
         $dados['numero_maximo_chapas'] = $numero_max_chapas;
         $dados['tipo_votacao'] = $tipo_votacao;
-        $dados['img'] = FALSE;
+        $dados['eleicao_ja_iniciada'] = false;
+        $dados['img'] = $img;
 
         return $this->db->insert("eleicao", $dados);
     }
@@ -26,6 +27,7 @@ class Eleicao_model extends CI_Model{
     public function ativar_eleicao($id_eleicao){
         //$dados['eleicao_ativa'] = "1";
         $this->db->set("eleicao_ativa", "1");
+        $this->db->set("eleicao_ja_iniciada", "1");
         $this->db->where("id_eleicao", $id_eleicao);
         return $this->db->update("eleicao");
     }
@@ -52,6 +54,39 @@ class Eleicao_model extends CI_Model{
         $this->db->select('*');
         $this->db->order_by('nome', 'ASC');
         return $this->db->get("eleicao")->result();
+    }
+
+    public function retorna_todas_eleicoes_encerradas(){
+        //preparar variaveis
+        $this->db->select('*');
+        $this->db->order_by('nome', 'ASC');
+        $this->db->where('eleicao_ativa', '0');
+        
+        return $this->db->get("eleicao")->result();
+    }
+
+    public function retorna_todas_eleicoes_ativas(){
+        //preparar variaveis
+        $this->db->select('*');
+        $this->db->order_by('nome', 'ASC');
+        $this->db->where('eleicao_ativa <>', '0');
+        
+        $res =  $this->db->get("eleicao")->result();
+        //die();
+        return $res;
+    }
+
+    public function eleicoes_ativas_e_nao_iniciadas(){
+        //preparar variaveis
+        $this->db->select('*');
+        $this->db->order_by('nome', 'ASC');
+        $this->db->where('eleicao_ativa <>', '0');
+        $this->db->where('eleicao_ja_iniciada', '0');
+
+        
+        $res =  $this->db->get("eleicao")->result();
+        //die();
+        return $res;
     }
 
     public function buscar_chave_publica($chavePublica){

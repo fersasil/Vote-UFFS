@@ -27,7 +27,7 @@
                 </div>
                 <div class="form-group row">
                   <div class="col-sm-6 mb-3 mb-sm-0">
-                    <input type="text" class="form-control form-control-user" name="matricula" id="matricula" placeholder="Matricula">
+                    <input pattern="[0-9.]+" type="text" class="form-control form-control-user" name="matricula" id="matricula" placeholder="Matricula">
                   </div>
                   <div class="col-sm-6">
                     <input type="text" class="form-control form-control-user" name="cpf" id="cpf" placeholder="CPF">
